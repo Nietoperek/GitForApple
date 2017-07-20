@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace GitForApple.ViewModels
 {
-    class BaseViewModel : ObservableObject
+    public class BaseViewModel : ObservableObject
     {
         /// <summary>
         /// Get the azure service instance

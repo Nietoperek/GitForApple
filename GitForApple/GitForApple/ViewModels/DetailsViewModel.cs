@@ -1,12 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GitForApple.Models;
 
 namespace GitForApple.ViewModels
 {
-    class DetailsViewModel : BaseViewModel
+    public class DetailsViewModel : BaseViewModel
     {
+        public Item Item { get; set; }
+        public DetailsViewModel(Item item = null)
+        {
+            Title = item.Name;
+            Item = item;
+        }
+
+        int quantity = 1;
+        public int Quantity
+        {
+            get { return quantity; }
+            set { SetProperty(ref quantity, value); }
+        }
+
     }
 }
