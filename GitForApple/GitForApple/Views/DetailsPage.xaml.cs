@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
-namespace GitForApple
+using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
+
+namespace GitForApple.Views
 {
-    public partial class MainPage : ContentPage
+    [XamlCompilation(XamlCompilationOptions.Compile)]
+    public partial class DetailsPage : ContentPage
     {
-        public MainPage()
+        public DetailsPage()
         {
             InitializeComponent();
         }

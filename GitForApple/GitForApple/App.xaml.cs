@@ -13,7 +13,7 @@ namespace GitForApple
         {
             InitializeComponent();
 
-            MainPage = new GitForApple.MainPage();
+            MainPage = new GitForApple.Views.MainPage();
         }
 
         protected override void OnStart()
