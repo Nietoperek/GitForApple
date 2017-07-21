@@ -1,10 +1,7 @@
 ﻿using GitForApple.Helpers;
 using GitForApple.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -12,25 +9,17 @@ namespace GitForApple.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-
-        public ObservableRangeCollection<Item> Items { get; set; }
+        
+        public ObservableRangeCollection<Response> Repos { get; set; }
         public Command LoadItemsCommand { get; set; }
 
         public MainViewModel()
         {
-            Title = "Repo viewer";
-            Items = new ObservableRangeCollection<Item>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
-
-            //MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
-            //{
-            //    var _item = item as Item;
-            //    Items.Add(_item);
-            //    await DataStore.AddItemAsync(_item);
-            //});
+            Title = "Repo viewer";         
+            Repos = new ObservableRangeCollection<Response>();
+            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp());            
         }
-
-        async Task ExecuteLoadItemsCommand()
+        async Task ExecuteLoadItemsCommandHttp()
         {
             if (IsBusy)
                 return;
@@ -39,9 +28,9 @@ namespace GitForApple.ViewModels
 
             try
             {
-                Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                Items.ReplaceRange(items);
+                Repos.Clear();
+                var repos = await DataGit.GetItemsAsync(true);
+                Repos.ReplaceRange(repos);
             }
             catch (Exception ex)
             {

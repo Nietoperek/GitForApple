@@ -5,13 +5,10 @@
              x:Class="GitForApple.Views.MainPage"             
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Filter items" />
-    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout>
             <ListView x:Name="ItemsListView"
-				ItemsSource="{Binding Items}"
+				ItemsSource="{Binding Repos}"
                 VerticalOptions="FillAndExpand"
                 HasUnevenRows="true"
                 RefreshCommand="{Binding LoadItemsCommand}"
@@ -22,15 +19,22 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Padding="10" Orientation="Horizontal">
-                                <StackLayout WidthRequest="50" VerticalOptions="Center" HorizontalOptions="Center">
-                                    <Image Source="https://xamarin.com/content/images/pages/forms/example-app.png" />
+                            <Grid Padding="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <StackLayout  Grid.Row="0" Grid.Column="0" VerticalOptions="Center">
+                                    <Image Source="{Binding Owner.Avatar_url}" />
                                 </StackLayout>
-                                <StackLayout Margin="10,0,0,0">
-                                    <Label Text="{Binding Name}" Style="{DynamicResource ListItemTextStyle}" FontSize="13"/>
+                                <StackLayout  Grid.Row="0" Grid.Column="1" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" Style="{DynamicResource ListItemTextStyle}" FontSize="16"/>
                                     <Label Text="{Binding Description}" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="13"/>
                                 </StackLayout>
-                            </StackLayout>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
