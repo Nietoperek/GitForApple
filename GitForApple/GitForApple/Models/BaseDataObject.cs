@@ -1,4 +1,5 @@
 ﻿using GitForApple.Helpers;
+using SQLite;
 using System;
 
 namespace GitForApple.Models
@@ -13,6 +14,7 @@ namespace GitForApple.Models
         /// <summary>
         /// Id for item
         /// </summary>
+		[PrimaryKey]
         public string Id { get; set; }
 
         /// <summary>

@@ -12,24 +12,24 @@ namespace GitForApple.ViewModels
         
         public ObservableRangeCollection<Response> Repos { get; set; }
         public Command LoadItemsCommand { get; set; }
+        public Command UpdateItemsCommand { get; set; }
 
         public MainViewModel()
         {
             Title = "Repo viewer";         
             Repos = new ObservableRangeCollection<Response>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp());            
+            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(false));
+            UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true));
         }
-        async Task ExecuteLoadItemsCommandHttp()
+        async Task ExecuteLoadItemsCommandHttp(bool update)
         {
             if (IsBusy)
                 return;
-
             IsBusy = true;
-
             try
             {
                 Repos.Clear();
-                var repos = await DataGit.GetItemsAsync(true);
+                var repos = await DataGit.GetItemsAsync(update);
                 Repos.ReplaceRange(repos);
             }
             catch (Exception ex)

@@ -43,6 +43,7 @@
     <Compile Include="Helpers\ObservableRangeCollection.cs" />
     <Compile Include="Models\BaseDataObject.cs" />
     <Compile Include="Models\Response.cs" />
+    <Compile Include="Models\UpdateResponse.cs" />
     <Compile Include="Services\GitHubApi.cs" />
     <Compile Include="Services\IGitHubData.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
