@@ -1,4 +1,5 @@
-﻿using GitForApple.Views;
+﻿using GitForApple.Helpers;
+using GitForApple.Views;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

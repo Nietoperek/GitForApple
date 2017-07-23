@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-
+using System.Linq;
 namespace GitForApple.ViewModels
 {
     public class MainViewModel : BaseViewModel
@@ -25,12 +25,15 @@ namespace GitForApple.ViewModels
         {
             if (IsBusy)
                 return;
-            IsBusy = true;
+            IsBusy = true;            
             try
             {
                 Repos.Clear();
                 var repos = await DataGit.GetItemsAsync(update);
-                Repos.ReplaceRange(repos);
+                var reposList = repos.ToList<Response>();
+                await DataSQLite.SaveListAsync(reposList);
+                var databaseObjects = await DataSQLite.GetItemsAsync();
+                Repos.ReplaceRange(databaseObjects);
             }
             catch (Exception ex)
             {

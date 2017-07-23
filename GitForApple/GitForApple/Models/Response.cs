@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
 using System;
 
 namespace GitForApple.Models
@@ -6,22 +7,21 @@ namespace GitForApple.Models
     public class Response : BaseDataObject
     {
         [JsonProperty("id")]
-        int repoId;
+        int repoId=-1;
         [JsonProperty("description")]
-        string description;
+        string description=string.Empty;
         [JsonProperty("name")]
-        string name;
+        string name = string.Empty;
         [JsonProperty("owner")]
         Owner owner;
         [JsonProperty("language")]
-        string language;
+        string language = string.Empty;
         [JsonProperty("updated_at")]
-        string updated_at;
+        string updated_at = string.Empty;
         [JsonProperty("forks")]
-        int forks;
+        int forks=-1;
 
         public Response() { }
-
         public int RepoId
         {
             get { return repoId; }

@@ -14,8 +14,10 @@ namespace GitForApple.Models
         /// <summary>
         /// Id for item
         /// </summary>
-		[PrimaryKey]
         public string Id { get; set; }
+
+        [PrimaryKey, AutoIncrement]
+        public int dbId { get; set; }
 
         /// <summary>
         /// Azure created at time stamp
