@@ -26,11 +26,11 @@ namespace GitForApple.Services
             if (isInitialized)
                 return;
             _UserAgent = "GitForApple";
-            _UserToken = "token 611b564fad7e549912f40ece9b33c8d8dccdd104";
+            //_UserToken = "token revoked";
             _RepoURL = "https://api.github.com/users/apple/repos";
             _SearchURL = "https://api.github.com/search/repositories?q=user:apple+pushed:%3E="; //2017-07-21
             client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", _UserToken);
+            //client.DefaultRequestHeaders.Add("Authorization", _UserToken);
             client.DefaultRequestHeaders.Add("User-Agent", _UserAgent);
 
             await getContent(_RepoURL, 1);
