@@ -24,7 +24,8 @@ namespace GitForApple.Droid.Helpers
             if (isOnline)
             {
                 if (networkInfo.Type == ConnectivityType.Wifi) return NetworkStatus.ReachableViaWiFiNetwork;
-                else if (networkInfo.IsRoaming) return NetworkStatus.ReachableViaCarrierDataNetwork;
+                else if (networkInfo.Type == ConnectivityType.Mobile) return NetworkStatus.ReachableViaCarrierDataNetwork;
+                //else if (networkInfo.IsRoaming) return NetworkStatus.ReachableViaCarrierDataNetwork;
             }          
             return NetworkStatus.NotReachable;
         }
