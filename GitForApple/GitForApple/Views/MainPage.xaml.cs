@@ -27,7 +27,8 @@ namespace GitForApple.Views
             ItemsListView.SelectedItem = null;
         }
         
-        protected override async void OnAppearing()
+        //protected override async void OnAppearing()        
+        protected override void OnAppearing()
         {
             base.OnAppearing();
 
