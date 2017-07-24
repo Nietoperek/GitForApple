@@ -1,7 +1,9 @@
-﻿using GitForApple.Helpers;
+﻿using Android.Widget;
+using GitForApple.Helpers;
 using GitForApple.Models;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using System.Linq;
@@ -25,15 +27,25 @@ namespace GitForApple.ViewModels
         {
             if (IsBusy)
                 return;
-            IsBusy = true;            
+            IsBusy = true;
+            var network = DependencyService.Get<Helpers.INetworkState>().getNetworkStatus();
+            if (network.Equals(NetworkStatus.NotReachable))
+            {
+                IsBusy = false;
+                return;
+            }
             try
             {
-                Repos.Clear();
                 var repos = await DataGit.GetItemsAsync(update);
-                var reposList = repos.ToList<Response>();
-                await DataSQLite.SaveListAsync(reposList);
-                var databaseObjects = await DataSQLite.GetItemsAsync();
-                Repos.ReplaceRange(databaseObjects);
+                //var reposList = repos.ToList<Response>();
+                //await DataSQLite.SaveListAsync(reposList);
+                //var databaseObjects = await DataSQLite.GetItemsAsync();
+                //Repos.ReplaceRange(databaseObjects);
+                if (repos != null && repos.Any())
+                {
+                   // Repos.Clear();
+                    Repos.ReplaceRange(repos);
+                }
             }
             catch (Exception ex)
             {
