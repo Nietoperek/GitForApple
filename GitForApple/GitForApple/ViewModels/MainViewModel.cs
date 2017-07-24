@@ -3,6 +3,7 @@ using GitForApple.Helpers;
 using GitForApple.Models;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
@@ -35,9 +36,12 @@ namespace GitForApple.ViewModels
             }
             try
             {
-                Repos.Clear();
                 var repos = await DataGit.GetItemsAsync(update);
-                Repos.ReplaceRange(repos);
+                if (repos != null && repos.Any())
+                {
+                   // Repos.Clear();
+                    Repos.ReplaceRange(repos);
+                }
             }
             catch (Exception ex)
             {
