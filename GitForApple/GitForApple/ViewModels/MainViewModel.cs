@@ -1,4 +1,5 @@
-﻿using GitForApple.Helpers;
+﻿using Android.Widget;
+using GitForApple.Helpers;
 using GitForApple.Models;
 using System;
 using System.Diagnostics;
@@ -26,6 +27,12 @@ namespace GitForApple.ViewModels
             if (IsBusy)
                 return;
             IsBusy = true;
+            var network = DependencyService.Get<Helpers.INetworkState>().getNetworkStatus();
+            if (network.Equals(NetworkStatus.NotReachable))
+            {
+                IsBusy = false;
+                return;
+            }
             try
             {
                 Repos.Clear();
