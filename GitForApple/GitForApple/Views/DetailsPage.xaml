@@ -19,21 +19,21 @@
             </StackLayout>
             <StackLayout  Grid.Row="0" Grid.Column="1" VerticalOptions="Center">
                 <StackLayout Margin ="5" Orientation="Horizontal">
-                    <Label Text="Language:" Style="{DynamicResource ListItemTextStyle}" WidthRequest="85" FontSize="13"/>
-                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Language}" Style="{DynamicResource ListItemTextStyle}" FontSize="13"/>
+                    <Label Text="Language:" Style="{DynamicResource DetailsTitleStyle}" WidthRequest="85" FontSize="13"/>
+                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Language}" Style="{DynamicResource DetailsBodyStyle}" FontSize="13"/>
                 </StackLayout>
                 <StackLayout Margin ="5" Orientation="Horizontal">
-                    <Label Text="Forks:" Style="{DynamicResource ListItemTextStyle}" WidthRequest="85" FontSize="13"/>
-                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Forks}" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="13"/>
+                    <Label Text="Forks:" Style="{DynamicResource DetailsTitleStyle}" WidthRequest="85" FontSize="13"/>
+                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Forks}" Style="{DynamicResource DetailsBodyStyle}" FontSize="13"/>
                 </StackLayout>
                 <StackLayout Margin ="5" Orientation="Horizontal">
-                    <Label Text="Last update:" Style="{DynamicResource ListItemTextStyle}" WidthRequest="85" FontSize="13"/>
-                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Updated_at}" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="13"/>
+                    <Label Text="Last update:" Style="{DynamicResource DetailsTitleStyle}" WidthRequest="85" FontSize="13"/>
+                    <Label HorizontalOptions="FillAndExpand" Text="{Binding Item.Updated_at}" Style="{DynamicResource DetailsBodyStyle}" FontSize="13"/>
                 </StackLayout>
             </StackLayout>
             <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0,20,0,0">
-                <Label Text="Description:" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="20"/>
-                <Label Text="{Binding Item.Description}" LineBreakMode="NoWrap" Style="{DynamicResource ListItemDetailTextStyle}" FontSize="16"/>
+                <Label Text="Description:" Style="{DynamicResource DetailsDescriptionStyle}" FontSize="20"/>
+                <Label Text="{Binding Item.Description}" Style="{DynamicResource DetailsDescriptionBodyStyle}" FontSize="16"/>
             </StackLayout>
         </Grid>
     </ContentPage.Content>

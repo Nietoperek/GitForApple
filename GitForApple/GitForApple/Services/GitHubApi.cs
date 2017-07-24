@@ -17,7 +17,7 @@ namespace GitForApple.Services
         List<Response> repos;
         HttpClient client;
         static string _UserAgent;
-        static string _UserToken;
+        //static string _UserToken;
         static string _RepoURL;
         static string _SearchURL;
 
