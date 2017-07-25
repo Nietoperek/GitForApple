@@ -36,7 +36,7 @@ namespace GitForApple.Models
         {
             get { return name; }
             set { SetProperty(ref name, value); }
-        }                
+        }
         public Owner Owner
         {
             get { return owner; }
@@ -49,9 +49,10 @@ namespace GitForApple.Models
         }
         public string Updated_at
         {
-            get {
+            get
+            {
                 var date = updated_at;
-                return date.Replace("T"," ").Replace("Z"," ");
+                return date.Replace("T", " ").Replace("Z", " ");
             }
             set { SetProperty(ref updated_at, value); }
         }
@@ -62,13 +63,22 @@ namespace GitForApple.Models
             set { SetProperty(ref forks, value); }
         }
 
+        public void clone(Response source)
+        {
+            Name = source.name;
+            Description = source.description;
+            Owner = source.owner;
+            Language = source.language;
+            Updated_at = source.updated_at;
+            Forks = source.forks;
+        }
     }
 
     public class Owner : BaseDataObject
     {
         [JsonProperty("avatar_url")]
         string avatar_url;
-        
+
         public Owner() { }
 
         public string Avatar_url

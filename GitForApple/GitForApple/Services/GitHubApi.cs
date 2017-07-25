@@ -16,29 +16,44 @@ namespace GitForApple.Services
         bool isInitialized;
         List<Response> repos;
         HttpClient client;
-        static string _UserAgent;
+        static string _UserAgent= "GitForApple";
         //static string _UserToken;
-        static string _RepoURL;
-        static string _SearchURL;
+        //_UserToken = "token revoked";
+        static string _RepoURL = "https://api.github.com/users/apple/repos";
+        static string _SearchURL = "https://api.github.com/search/repositories?q=user:apple+pushed:%3E=";
+
 
         public async Task InitializeAsync()
         {
             if (isInitialized)
                 return;
-            _UserAgent = "GitForApple";
-            //_UserToken = "token revoked";
-            _RepoURL = "https://api.github.com/users/apple/repos";
-            _SearchURL = "https://api.github.com/search/repositories?q=user:apple+pushed:%3E="; //2017-07-21
-            client = new HttpClient();
-            //client.DefaultRequestHeaders.Add("Authorization", _UserToken);
-            client.DefaultRequestHeaders.Add("User-Agent", _UserAgent);
-
+            if (client == null)
+            {
+                client = new HttpClient();
+                //client.DefaultRequestHeaders.Add("Authorization", _UserToken);
+                client.DefaultRequestHeaders.Add("User-Agent", _UserAgent);
+            }
             await getContent(_RepoURL, 1);
 
             isInitialized = true;
         }
+        public async Task<bool> isSiteReachable(string url)
+        {
+            if (client == null)
+            {
+                client = new HttpClient();
+                client.DefaultRequestHeaders.Add("User-Agent", _UserAgent);
 
-        public async Task<bool> getContent(string url, int numberOfpages)
+            }
+            var uri = new Uri(string.Format(url, string.Empty));
+            var response = await client.GetAsync(uri);
+            if (response.IsSuccessStatusCode)
+                return await Task.FromResult(true);
+
+            return await Task.FromResult(false);
+        }
+
+            public async Task<bool> getContent(string url, int numberOfpages)
         {
             var uri = new Uri(string.Format(url, string.Empty));
             var response = await client.GetAsync(uri);
@@ -72,6 +87,7 @@ namespace GitForApple.Services
         public async Task<bool> getContentUpdate()
         {
             bool updated = false;
+            //TODO LastUpdateTime
             DateTime now = DateTime.Now.ToLocalTime();
             var uri = new Uri(string.Format(_SearchURL + now.ToString("yyyy") + "-" + now.ToString("MM") + "-" + now.ToString("dd"), string.Empty));
             var response = await client.GetAsync(uri);
@@ -81,29 +97,36 @@ namespace GitForApple.Services
                 var updateResponse = JsonConvert.DeserializeObject<UpdateResponse>(content);
                 var array = updateResponse.Items;
                 var updatedRepos = array.ToList();
+                List<Response> newItems = updatedRepos.Where(n => repos.All(d => n.RepoId != d.RepoId)).ToList();
                 List<Response> toBeUpdated = repos.Where(c => updatedRepos.Any(d => c.RepoId == d.RepoId && c.Updated_at != d.Updated_at)).ToList();
+                //toBeUpdated.Add(new Response { RepoId = 64889661, Name = "Updated item", Description="Test no image update" });
                 if (toBeUpdated != null && toBeUpdated.Count > 0)
                 {
                     updated = true;
                     foreach (Response u in toBeUpdated)
                     {
                         var repo = repos.First(i => i.RepoId == u.RepoId);
-                        repo = u;
+                        repo.clone(u);
                     }
+                }
+                //newItems.Add(new Response {Name="Test", Description="Test"});
+                if (newItems != null && newItems.Count() > 0)
+                {
+                    updated = true;
+                    repos.AddRange(newItems);
                 }
             }
 
             return await Task.FromResult(updated);
         }
-        public async Task<IEnumerable<Response>> GetItemsAsync(bool forceRefresh = false)
+        public async Task<IEnumerable<Response>> GetItemsAsync(bool refresh = false)
         {
-            await InitializeAsync();
-            if (forceRefresh)
+            if (repos!=null && refresh)
             {
                 if(!await getContentUpdate())
                     return await Task.FromResult(Enumerable.Empty<Response>());
             }
-
+            await InitializeAsync();
             return await Task.FromResult(repos);
         }
     }

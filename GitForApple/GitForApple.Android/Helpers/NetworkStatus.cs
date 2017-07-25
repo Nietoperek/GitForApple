@@ -2,7 +2,6 @@
 using GitForApple.Helpers;
 using Android.Net;
 using GitForApple.Droid.Helpers;
-using Android.Widget;
 
 [assembly: Dependency(typeof(NetworkState))]
 namespace GitForApple.Droid.Helpers
@@ -14,21 +13,13 @@ namespace GitForApple.Droid.Helpers
         {
             ConnectivityManager connectivityManager = (ConnectivityManager)Android.App.Application.Context.GetSystemService(Android.App.Activity.ConnectivityService);
             NetworkInfo networkInfo = connectivityManager.ActiveNetworkInfo;
-
-            if (networkInfo == null)
-            {
-                Toast.MakeText(Android.App.Application.Context,"No internet connection", ToastLength.Long).Show();
-                return NetworkStatus.NotReachable;
-            }
-            bool isOnline = networkInfo.IsConnected;
-            if (isOnline)
+            if (networkInfo!=null && networkInfo.IsConnectedOrConnecting)
             {
                 if (networkInfo.Type == ConnectivityType.Wifi) return NetworkStatus.ReachableViaWiFiNetwork;
                 else if (networkInfo.Type == ConnectivityType.Mobile) return NetworkStatus.ReachableViaCarrierDataNetwork;
-                //else if (networkInfo.IsRoaming) return NetworkStatus.ReachableViaCarrierDataNetwork;
-            }          
-            return NetworkStatus.NotReachable;
-        }
+            }
+            return NetworkStatus.NotConnected;
+        }        
         
     }
 
