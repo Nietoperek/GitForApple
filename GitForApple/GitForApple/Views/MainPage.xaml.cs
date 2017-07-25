@@ -15,16 +15,18 @@ namespace GitForApple.Views
             InitializeComponent();
             BindingContext = viewModel = new MainViewModel();
             bool alertResult = true;
-            MessagingCenter.Subscribe<MainViewModel>(this, "CheckConnection", async (obj) => {
-                alertResult = await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue",null, "OK");
+            MessagingCenter.Subscribe<MainViewModel>(this, "CheckConnection", async (obj) =>
+            {
+                alertResult = await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue", "CLOSE", "REFRESH");
                 if (!alertResult)
                 {
                     viewModel.LoadItemsCommand.Execute(null);
                     alertResult = true;
                 }
             });
-            MessagingCenter.Subscribe<MainViewModel>(this, "SiteUnReachable", async (obj) => {
-                alertResult = await DisplayAlert("Site not reachable", "Please check your internet connection",null, "OK");
+            MessagingCenter.Subscribe<MainViewModel>(this, "SiteUnReachable", async (obj) =>
+            {
+                alertResult = await DisplayAlert("Site not reachable", "Please check your internet connection", "CLOSE", "REFRESH");
                 if (!alertResult)
                 {
                     viewModel.LoadItemsCommand.Execute(null);
@@ -50,13 +52,13 @@ namespace GitForApple.Views
             }
             ItemsListView.SelectedItem = null;
         }
-        
+
         //protected override async void OnAppearing()        
         protected override async void OnAppearing()
         {
             base.OnAppearing();
             if (viewModel.Repos.Count == 0)
                 viewModel.LoadItemsCommand.Execute(null);
-        }                
+        }
     }
 }

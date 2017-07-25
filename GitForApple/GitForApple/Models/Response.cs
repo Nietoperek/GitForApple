@@ -6,19 +6,19 @@ namespace GitForApple.Models
     public class Response : BaseDataObject
     {
         [JsonProperty("id")]
-        int repoId;
+        int repoId = -1;
         [JsonProperty("description")]
-        string description;
+        string description = String.Empty;
         [JsonProperty("name")]
-        string name;
+        string name = String.Empty;
         [JsonProperty("owner")]
         Owner owner;
         [JsonProperty("language")]
-        string language;
+        string language = String.Empty;
         [JsonProperty("updated_at")]
-        string updated_at;
+        string updated_at = String.Empty;
         [JsonProperty("forks")]
-        int forks;
+        int forks = -1;
 
         public Response() { }
 
@@ -77,7 +77,7 @@ namespace GitForApple.Models
     public class Owner : BaseDataObject
     {
         [JsonProperty("avatar_url")]
-        string avatar_url;
+        string avatar_url = String.Empty;
 
         public Owner() { }
 
