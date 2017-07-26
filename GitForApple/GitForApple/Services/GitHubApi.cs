@@ -1,7 +1,9 @@
-﻿using GitForApple.Models;
+﻿using GitForApple.Helpers;
+using GitForApple.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
@@ -16,9 +18,9 @@ namespace GitForApple.Services
         bool isInitialized;
         List<Response> repos;
         HttpClient client;
-        static string _UserAgent= "GitForApple";
+        static string _UserAgent = "Mobile Application GitForApple Agent";
         //static string _UserToken;
-        //_UserToken = "token revoked";
+        //static string _UserToken = "token revoked";
         static string _RepoURL = "https://api.github.com/users/apple/repos";
         static string _SearchURL = "https://api.github.com/search/repositories?q=user:apple+pushed:%3E=";
 
@@ -39,25 +41,53 @@ namespace GitForApple.Services
         }
         public async Task<bool> isSiteReachable(string url)
         {
+            HttpResponseMessage response = null;
             if (client == null)
             {
                 client = new HttpClient();
+                //client.DefaultRequestHeaders.Add("Authorization", _UserToken);
                 client.DefaultRequestHeaders.Add("User-Agent", _UserAgent);
-
             }
-            var uri = new Uri(string.Format(url, string.Empty));
-            var response = await client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
+            try
+            {
+                var uri = new Uri(string.Format(_RepoURL, string.Empty));
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException e)
+            {
+                Debug.WriteLine(e);
+                MessagingCenter.Send(new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Unable to connect to site.",
+                    Cancel = "OK"
+                }, "SiteUnreachable");
+            }
+            if (response != null && response.IsSuccessStatusCode)
                 return await Task.FromResult(true);
 
             return await Task.FromResult(false);
         }
 
-            public async Task<bool> getContent(string url, int numberOfpages)
+        public async Task<bool> getContent(string url, int numberOfpages)
         {
-            var uri = new Uri(string.Format(url, string.Empty));
-            var response = await client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
+            HttpResponseMessage response = null;
+            try
+            {
+                var uri = new Uri(string.Format(url, string.Empty));
+                response = await client.GetAsync(uri);
+            }
+            catch (HttpRequestException e)
+            {
+                Debug.WriteLine(e);
+                MessagingCenter.Send(new MessagingCenterAlert
+                {
+                    Title = "Error",
+                    Message = "Unable to connect to site.",
+                    Cancel = "OK"
+                }, "SiteUnreachable");
+            }
+            if (response != null && response.IsSuccessStatusCode)
             {
                 int lastPage = numberOfpages;
                 var content = await response.Content.ReadAsStringAsync();
@@ -121,9 +151,9 @@ namespace GitForApple.Services
         }
         public async Task<IEnumerable<Response>> GetItemsAsync(bool refresh = false)
         {
-            if (repos!=null && refresh)
+            if (repos != null && refresh)
             {
-                if(!await getContentUpdate())
+                if (!await getContentUpdate())
                     return await Task.FromResult(Enumerable.Empty<Response>());
             }
             await InitializeAsync();

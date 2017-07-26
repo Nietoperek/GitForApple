@@ -9,47 +9,33 @@ namespace GitForApple.Views
     public partial class MainPage : ContentPage
     {
         MainViewModel viewModel;
-        bool isBusy;
         public MainPage()
         {
             InitializeComponent();
             BindingContext = viewModel = new MainViewModel();
-            bool alertResult = true;
             MessagingCenter.Subscribe<MainViewModel>(this, "CheckConnection", async (obj) =>
             {
-                alertResult = await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue", "CLOSE", "REFRESH");
-                if (!alertResult)
-                {
+                if (!await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue", "CLOSE", "REFRESH"))
                     viewModel.LoadItemsCommand.Execute(null);
-                    alertResult = true;
-                }
+
             });
             MessagingCenter.Subscribe<MainViewModel>(this, "SiteUnReachable", async (obj) =>
             {
-                alertResult = await DisplayAlert("Site not reachable", "Please check your internet connection", "CLOSE", "REFRESH");
-                if (!alertResult)
-                {
+                if (!await DisplayAlert("Site not reachable", "Please check your internet connection", "CLOSE", "REFRESH"))
                     viewModel.LoadItemsCommand.Execute(null);
-                    alertResult = true;
-                }
             });
         }
 
-        void subscribeToMC()
-        {
-
-        }
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
+            ItemsListView.IsEnabled = false; //freeze ListView
             var item = args.SelectedItem as Response;
-            if (item == null)
-                return;
-            if (!isBusy)
+            if (item == null) //item null or deselected
             {
-                isBusy = true;
-                await Navigation.PushAsync(new DetailsPage(new DetailsViewModel(item)));
-                isBusy = false;
+                ItemsListView.IsEnabled = true;
+                return;
             }
+            await Navigation.PushAsync(new DetailsPage(new DetailsViewModel(item)));
             ItemsListView.SelectedItem = null;
         }
 

@@ -34,7 +34,7 @@ namespace GitForApple.ViewModels
                 MessagingCenter.Send(this, "CheckConnection");
                 return false;
             }
-            else if (!await DataGit.isSiteReachable("http://api.github.com/"))
+            else if (!await DataGit.isSiteReachable("https://api.github.com/"))
             {
                 MessagingCenter.Send(this, "SiteUnReachable");
                 return false;
