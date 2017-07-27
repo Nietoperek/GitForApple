@@ -12,7 +12,7 @@
                                    HeightRequest="50"
                                    AbsoluteLayout.LayoutFlags="XProportional"                                   
                                    Color="{StaticResource Accent}}"                                    
-                                   IsRunning="true"
+                                   IsRunning="{Binding IsBusy}"
                                    HorizontalOptions="CenterAndExpand"
                                    VerticalOptions="CenterAndExpand"/>
             <TableView x:Name="TableView" AbsoluteLayout.LayoutFlags="All"  AbsoluteLayout.LayoutBounds="0,0,1,1">
