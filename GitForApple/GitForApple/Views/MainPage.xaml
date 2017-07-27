@@ -6,9 +6,19 @@
              Title="{Binding Title}"
              x:Name="BrowseItemsPage">
     <ContentPage.Content>
-        <TableView RowHeight="80">
-            <TableSection x:Name="TableSection">
-            </TableSection>
-        </TableView>
+        <AbsoluteLayout x:Name="absLayout">            
+            <ActivityIndicator x:Name="ProgressBar" 
+                                   AbsoluteLayout.LayoutBounds=".5,0,50,50"
+                                   HeightRequest="50"
+                                   AbsoluteLayout.LayoutFlags="XProportional"                                   
+                                   Color="{StaticResource Accent}}"                                    
+                                   IsRunning="true"
+                                   HorizontalOptions="CenterAndExpand"
+                                   VerticalOptions="CenterAndExpand"/>
+            <TableView x:Name="TableView" AbsoluteLayout.LayoutFlags="All"  AbsoluteLayout.LayoutBounds="0,0,1,1">
+                <TableSection x:Name="TableSection">
+                </TableSection>
+            </TableView>
+        </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -11,9 +11,10 @@ namespace GitForApple.Views
     {
         MainViewModel viewModel;
         public MainPage()
-        {
+        {            
             InitializeComponent();
             BindingContext = viewModel = new MainViewModel();
+            TableView.RowHeight = 80;
             MessagingCenter.Subscribe<MainViewModel>(this, "CheckConnection", async (obj) =>
             {
                 if (!await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue", "CLOSE", "REFRESH"))
@@ -30,19 +31,8 @@ namespace GitForApple.Views
             {
                 addCells();
             });
-        }
-
-        async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
-        {
-            //ItemsListView.IsEnabled = false; //freeze ListView
-            var item = args.SelectedItem as Response;
-            if (item == null) //item null or deselected
-            {
-                //ItemsListView.IsEnabled = true;
-                return;
-            }
-            await Navigation.PushAsync(new DetailsPage(new DetailsViewModel(item)));
-            // ItemsListView.SelectedItem = null;
+            absLayout.RaiseChild(ProgressBar);
+            absLayout.LowerChild(TableView);
         }
 
         async void cellTapped(object sender, EventArgs args)
@@ -74,8 +64,10 @@ namespace GitForApple.Views
 
         void addCells()
         {
-            var repos = viewModel.Repos;            
-            foreach(Response r in repos)
+            var repos = viewModel.Repos;
+            //absLayout.RaiseChild(ProgressBar);
+            //absLayout.LowerChild(TableView);
+            foreach (Response r in repos)
             {
                 ImageCell ic = new ImageCell();
                 ic.SetBinding(ImageCell.ImageSourceProperty, "Owner.Avatar_url");
@@ -86,6 +78,8 @@ namespace GitForApple.Views
                 ic.Tapped += cellTapped;
                 TableSection.Add(ic);
             }
+            //absLayout.RaiseChild(TableView);
+           // absLayout.LowerChild(ProgressBar);
         }
     }
 }
