@@ -9,13 +9,13 @@
         <StackLayout>
             <ListView x:Name="ItemsListView"
 				ItemsSource="{Binding Repos}"
-                VerticalOptions="FillAndExpand"
-                HasUnevenRows="true"
+                HasUnevenRows="false"
                 RefreshCommand="{Binding UpdateItemsCommand}"
                 IsPullToRefreshEnabled="true"
                 IsRefreshing="{Binding IsBusy, Mode=OneWay}"
                 CachingStrategy="RecycleElement"
-				ItemSelected="OnItemSelected">
+				ItemSelected="OnItemSelected"
+                RowHeight="80">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -36,6 +36,12 @@
                                 </StackLayout>
                             </Grid>
                         </ViewCell>
+                        <!--<ImageCell
+                            Text="{Binding Name}"
+                            Detail="{Binding Description}"
+                            ImageSource="{Binding Owner.Avatar_url}"
+                            >
+                        </ImageCell>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

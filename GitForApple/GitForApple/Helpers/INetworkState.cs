@@ -6,6 +6,7 @@
     }
     public enum NetworkStatus
     {
+        NotConnected,
         NotReachable,
         ReachableViaCarrierDataNetwork,
         ReachableViaWiFiNetwork

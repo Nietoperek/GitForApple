@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using SQLite;
 using System;
 
 namespace GitForApple.Models
@@ -7,21 +6,22 @@ namespace GitForApple.Models
     public class Response : BaseDataObject
     {
         [JsonProperty("id")]
-        int repoId=-1;
+        int repoId = -1;
         [JsonProperty("description")]
-        string description=string.Empty;
+        string description = String.Empty;
         [JsonProperty("name")]
-        string name = string.Empty;
+        string name = String.Empty;
         [JsonProperty("owner")]
         Owner owner;
         [JsonProperty("language")]
-        string language = string.Empty;
+        string language = String.Empty;
         [JsonProperty("updated_at")]
-        string updated_at = string.Empty;
+        string updated_at = String.Empty;
         [JsonProperty("forks")]
-        int forks=-1;
+        int forks = -1;
 
         public Response() { }
+
         public int RepoId
         {
             get { return repoId; }
@@ -36,7 +36,7 @@ namespace GitForApple.Models
         {
             get { return name; }
             set { SetProperty(ref name, value); }
-        }                
+        }
         public Owner Owner
         {
             get { return owner; }
@@ -49,9 +49,10 @@ namespace GitForApple.Models
         }
         public string Updated_at
         {
-            get {
+            get
+            {
                 var date = updated_at;
-                return date.Replace("T"," ").Replace("Z"," ");
+                return date.Replace("T", " ").Replace("Z", " ");
             }
             set { SetProperty(ref updated_at, value); }
         }
@@ -62,13 +63,22 @@ namespace GitForApple.Models
             set { SetProperty(ref forks, value); }
         }
 
+        public void clone(Response source)
+        {
+            Name = source.name;
+            Description = source.description;
+            Owner = source.owner;
+            Language = source.language;
+            Updated_at = source.updated_at;
+            Forks = source.forks;
+        }
     }
 
     public class Owner : BaseDataObject
     {
         [JsonProperty("avatar_url")]
-        string avatar_url;
-        
+        string avatar_url = String.Empty;
+
         public Owner() { }
 
         public string Avatar_url

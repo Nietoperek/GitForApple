@@ -1,6 +1,7 @@
 ﻿using Android.Widget;
 using GitForApple.Helpers;
 using GitForApple.Models;
+using GitForApple.Views;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -11,25 +12,41 @@ namespace GitForApple.ViewModels
 {
     public class MainViewModel : BaseViewModel
     {
-        
+
         public ObservableRangeCollection<Response> Repos { get; set; }
         public Command LoadItemsCommand { get; set; }
         public Command UpdateItemsCommand { get; set; }
+        public Command NetworkCommand { get; set; }
+        public Command NetworkConnectionCommand { get; set; }
 
         public MainViewModel()
         {
-            Title = "Repo viewer";         
+            Title = "Repo viewer";
             Repos = new ObservableRangeCollection<Response>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(false));
-            UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true));
+            UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true)); 
+        }
+       async Task<bool> NetworkAvailable()
+        {
+            var network = DependencyService.Get<Helpers.INetworkState>().getNetworkStatus();
+            if (network.Equals(NetworkStatus.NotConnected))
+            {
+                MessagingCenter.Send(this, "CheckConnection");
+                return false;
+            }
+            else if (!await DataGit.isSiteReachable("https://api.github.com/"))
+            {
+                MessagingCenter.Send(this, "SiteUnReachable");
+                return false;
+            }
+            return true;
         }
         async Task ExecuteLoadItemsCommandHttp(bool update)
         {
             if (IsBusy)
                 return;
             IsBusy = true;
-            var network = DependencyService.Get<Helpers.INetworkState>().getNetworkStatus();
-            if (network.Equals(NetworkStatus.NotReachable))
+            if (!await NetworkAvailable())
             {
                 IsBusy = false;
                 return;
@@ -43,7 +60,7 @@ namespace GitForApple.ViewModels
                 //Repos.ReplaceRange(databaseObjects);
                 if (repos != null && repos.Any())
                 {
-                   // Repos.Clear();
+                    // Repos.Clear();
                     Repos.ReplaceRange(repos);
                 }
             }

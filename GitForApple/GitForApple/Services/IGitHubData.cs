@@ -7,6 +7,7 @@ namespace GitForApple.Services
     {
         Task InitializeAsync();
         Task<bool> getContent(string url, int numberOfpages);
+        Task<bool> isSiteReachable(string url);
         Task<bool> getContentUpdate();
         Task<IEnumerable<T>> GetItemsAsync(bool forceRefresh = false);
 
