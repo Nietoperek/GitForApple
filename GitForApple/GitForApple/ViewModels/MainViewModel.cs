@@ -17,14 +17,14 @@ namespace GitForApple.ViewModels
         public Command LoadItemsCommand { get; set; }
         public Command UpdateItemsCommand { get; set; }
         public Command NetworkCommand { get; set; }
-        public Command NetworkConnectionCommand { get; set; }
 
         public MainViewModel()
         {
             Title = "Repo viewer";
             Repos = new ObservableRangeCollection<Response>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(false));
-            UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true)); 
+            UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true));
+            NetworkCommand = new Command(async () => await NetworkAvailable());
         }
        async Task<bool> NetworkAvailable()
         {
@@ -58,6 +58,7 @@ namespace GitForApple.ViewModels
                 {
                     // Repos.Clear();
                     Repos.ReplaceRange(repos);
+                    MessagingCenter.Send(this, "ItemsChanged");
                 }
             }
             catch (Exception ex)

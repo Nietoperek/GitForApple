@@ -1,5 +1,6 @@
 ﻿using GitForApple.Models;
 using GitForApple.ViewModels;
+using System;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,19 +25,38 @@ namespace GitForApple.Views
                 if (!await DisplayAlert("Site not reachable", "Please check your internet connection", "CLOSE", "REFRESH"))
                     viewModel.LoadItemsCommand.Execute(null);
             });
+
+            MessagingCenter.Subscribe<MainViewModel>(this, "ItemsChanged", (obj) =>
+            {
+                addCells();
+            });
         }
 
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
-            ItemsListView.IsEnabled = false; //freeze ListView
+            //ItemsListView.IsEnabled = false; //freeze ListView
             var item = args.SelectedItem as Response;
             if (item == null) //item null or deselected
             {
-                ItemsListView.IsEnabled = true;
+                //ItemsListView.IsEnabled = true;
                 return;
             }
             await Navigation.PushAsync(new DetailsPage(new DetailsViewModel(item)));
-            ItemsListView.SelectedItem = null;
+            // ItemsListView.SelectedItem = null;
+        }
+
+        async void cellTapped(object sender, EventArgs args)
+        {
+            //ItemsListView.IsEnabled = false; //freeze ListView
+            ImageCell ic = (ImageCell)sender;
+            Response selectedItem = (Response)ic.BindingContext;
+            if (selectedItem == null) //item null or deselected
+            {
+                //ItemsListView.IsEnabled = true;
+                return;
+            }
+            await Navigation.PushAsync(new DetailsPage(new DetailsViewModel(selectedItem)));
+            // ItemsListView.SelectedItem = null;
         }
 
         //protected override async void OnAppearing()        
@@ -44,7 +64,28 @@ namespace GitForApple.Views
         {
             base.OnAppearing();
             if (viewModel.Repos.Count == 0)
+            {
                 viewModel.LoadItemsCommand.Execute(null);
+                // while (viewModel.IsBusy) { }
+            }
+            //await viewModel.ExecuteLoadItemsCommandHttp(false);
+            //addCells();
+        }
+
+        void addCells()
+        {
+            var repos = viewModel.Repos;            
+            foreach(Response r in repos)
+            {
+                ImageCell ic = new ImageCell();
+                ic.SetBinding(ImageCell.ImageSourceProperty, "Owner.Avatar_url");
+                ic.SetBinding(ImageCell.TextProperty, "Name");
+                ic.SetBinding(ImageCell.DetailProperty, "Description");
+                ic.BindingContext = r;
+
+                ic.Tapped += cellTapped;
+                TableSection.Add(ic);
+            }
         }
     }
 }
