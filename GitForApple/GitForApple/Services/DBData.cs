@@ -4,6 +4,7 @@ using SQLite;
 using GitForApple.Models;
 using Xamarin.Forms;
 using Android.Util;
+using System;
 
 [assembly: Dependency(typeof(GitForApple.Services.DBData))]
 namespace GitForApple.Services
@@ -25,17 +26,26 @@ namespace GitForApple.Services
             if (isInitialized)
                 return;
             try
-            {   var path = DependencyService.Get<Helpers.IFileHelper>().GetLocalFilePath("GitHubApi.db");
-                database = new SQLiteAsyncConnection(path);
+            {
+                if (database == null)
+                {
+                    database = new SQLiteAsyncConnection(DependencyService.Get<Helpers.IFileHelper>().GetLocalFilePath("GitHubApi.db3"));
+                }
+                //var test = await database.CreateTableAsync<Dbo>();
+
+                var success1 = await database.CreateTableAsync<Owner>();
                 var success = await database.CreateTableAsync<Response>();
                 Log.Error("SQLITEDB", success.ToString());
+                isInitialized = true;
             }
             catch (SQLiteException ex)
             {
                 Log.Error("SQLite DB", ex.Message);
             }
-            
-            isInitialized = true;
+            catch (Exception e)
+            {
+                Log.Error("System error", e.Message);
+            }
         }
         public async Task<IEnumerable<Response>> GetItemsAsync()
         {
@@ -55,12 +65,19 @@ namespace GitForApple.Services
             return await database.InsertOrReplaceAsync(item);
         }
 
-        public async Task<int> SaveListAsync(List<Response> items)
+        public async Task<int> SaveListAsync(IEnumerable<Response> items)
         {
             await InitializeAsync();
-            await database.InsertAllAsync(items).ContinueWith(t => { Log.Error("SQLITEDB", "test"); });
             var numberOfItems = 0;
-            return numberOfItems = 0; ;
+            try
+            {
+                numberOfItems = await database.InsertAllAsync(items);
+            }
+            catch (Exception e)
+            {
+                Log.Error("System error", e.Message);
+            }
+            return numberOfItems;
         }
 
         public async Task<int> SaveorReplaceListAsync(List<Response> items)

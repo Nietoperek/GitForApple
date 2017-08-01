@@ -7,7 +7,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using System.Linq;
 namespace GitForApple.ViewModels
 {
     public class MainViewModel : BaseViewModel
@@ -48,19 +47,17 @@ namespace GitForApple.ViewModels
             IsBusy = true;
             if (!await NetworkAvailable())
             {
+                var databaseObjects = await DataSQLite.GetItemsAsync();
+                Repos.ReplaceRange(databaseObjects);
                 IsBusy = false;
                 return;
             }
             try
             {
                 var repos = await DataGit.GetItemsAsync(update);
-                //var reposList = repos.ToList<Response>();
-                //await DataSQLite.SaveListAsync(reposList);
-                //var databaseObjects = await DataSQLite.GetItemsAsync();
-                //Repos.ReplaceRange(databaseObjects);
                 if (repos != null && repos.Any())
                 {
-                    // Repos.Clear();
+                    await DataSQLite.SaveListAsync(repos);
                     Repos.ReplaceRange(repos);
                 }
             }

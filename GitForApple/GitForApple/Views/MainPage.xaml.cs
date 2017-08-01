@@ -15,7 +15,7 @@ namespace GitForApple.Views
             BindingContext = viewModel = new MainViewModel();
             MessagingCenter.Subscribe<MainViewModel>(this, "CheckConnection", async (obj) =>
             {
-                if (!await DisplayAlert("No network", "Please enable WiFi or Mobile Data to continue", "CLOSE", "REFRESH"))
+                if (!await DisplayAlert("No network", "Please enable WiFi or Mobile Data to get current data.", "CLOSE", "REFRESH"))
                     viewModel.LoadItemsCommand.Execute(null);
 
             });
@@ -40,7 +40,7 @@ namespace GitForApple.Views
         }
 
         //protected override async void OnAppearing()        
-        protected override async void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
             if (viewModel.Repos.Count == 0)

@@ -94,10 +94,9 @@ namespace GitForApple.Services
                 var responseList = JsonConvert.DeserializeObject<List<Response>>(content);
                 if (repos == null) { repos = responseList; }
                 else { repos.AddRange(responseList); }
-                IEnumerable<string> values;
                 string nextUrl = String.Empty;
                 // if more pages in repos then there is header Link
-                if (response.Headers.TryGetValues("Link", out values))
+                if (response.Headers.TryGetValues("Link", out IEnumerable<string> values))
                 {
                     Match match = Regex.Match(values.FirstOrDefault(), @"^.*<(.*?page=)([0-9]*)>; rel=.last.", RegexOptions.IgnoreCase);
                     if (match.Success)
@@ -136,7 +135,7 @@ namespace GitForApple.Services
                     foreach (Response u in toBeUpdated)
                     {
                         var repo = repos.First(i => i.RepoId == u.RepoId);
-                        repo.clone(u);
+                        repo.Clone(u);
                     }
                 }
                 //newItems.Add(new Response {Name="Test", Description="Test"});

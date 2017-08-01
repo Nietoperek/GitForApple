@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 using System;
 
 namespace GitForApple.Models
@@ -19,9 +21,11 @@ namespace GitForApple.Models
         string updated_at = String.Empty;
         [JsonProperty("forks")]
         int forks = -1;
+        int ownerId = -1;
 
         public Response() { }
 
+        [PrimaryKey]
         public int RepoId
         {
             get { return repoId; }
@@ -36,7 +40,14 @@ namespace GitForApple.Models
         {
             get { return name; }
             set { SetProperty(ref name, value); }
+        }        
+        [ForeignKey(typeof(Owner))]
+        public int OwnerId
+        {
+            get { return ownerId; }
+            set { SetProperty(ref ownerId, value); }
         }
+        [OneToOne]
         public Owner Owner
         {
             get { return owner; }
@@ -63,7 +74,7 @@ namespace GitForApple.Models
             set { SetProperty(ref forks, value); }
         }
 
-        public void clone(Response source)
+        public void Clone(Response source)
         {
             Name = source.name;
             Description = source.description;
@@ -78,6 +89,13 @@ namespace GitForApple.Models
     {
         [JsonProperty("avatar_url")]
         string avatar_url = String.Empty;
+        [PrimaryKey, AutoIncrement]
+        public int OwnerId { get; set; }
+
+        [ForeignKey(typeof(Response))]
+        public int RepoId { get; set; }
+        [OneToOne]
+        public Response Response { get; set; }
 
         public Owner() { }
 

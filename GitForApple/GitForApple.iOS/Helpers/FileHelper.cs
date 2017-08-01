@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using Xamarin.Forms;
-using GitForApple.iOS;
 using GitForApple.Helpers;
+using GitForApple.iOS.Helpers;
 
 [assembly: Dependency(typeof(FileHelper))]
-namespace GitForApple.iOS
+namespace GitForApple.iOS.Helpers
 {
     public class FileHelper : IFileHelper
     {

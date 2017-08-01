@@ -1,5 +1,4 @@
 ﻿using GitForApple.Helpers;
-using SQLite;
 using System;
 
 namespace GitForApple.Models
@@ -16,8 +15,7 @@ namespace GitForApple.Models
         /// </summary>
         public string Id { get; set; }
 
-        [PrimaryKey, AutoIncrement]
-        public int dbId { get; set; }
+        //public int dbId { get; set; }
 
         /// <summary>
         /// Azure created at time stamp
