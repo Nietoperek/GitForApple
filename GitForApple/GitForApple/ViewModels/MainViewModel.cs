@@ -12,7 +12,7 @@ namespace GitForApple.ViewModels
     public class MainViewModel : BaseViewModel
     {
 
-        public ObservableRangeCollection<Response> Repos { get; set; }
+        public ObservableRangeCollection<Repo> Repos { get; set; }
         public Command LoadItemsCommand { get; set; }
         public Command UpdateItemsCommand { get; set; }
         public Command NetworkCommand { get; set; }
@@ -21,7 +21,7 @@ namespace GitForApple.ViewModels
         public MainViewModel()
         {
             Title = "Repo viewer";
-            Repos = new ObservableRangeCollection<Response>();
+            Repos = new ObservableRangeCollection<Repo>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(false));
             UpdateItemsCommand = new Command(async () => await ExecuteLoadItemsCommandHttp(true)); 
         }
@@ -47,8 +47,10 @@ namespace GitForApple.ViewModels
             IsBusy = true;
             if (!await NetworkAvailable())
             {
+                if (Repos.Count == 0) { 
                 var databaseObjects = await DataSQLite.GetItemsAsync();
                 Repos.ReplaceRange(databaseObjects);
+                }
                 IsBusy = false;
                 return;
             }

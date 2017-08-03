@@ -4,8 +4,8 @@ namespace GitForApple.ViewModels
 {
     public class DetailsViewModel : BaseViewModel
     {
-        public Response Item { get; set; }
-        public DetailsViewModel(Response item = null)
+        public Repo Item { get; set; }
+        public DetailsViewModel(Repo item = null)
         {
             Title = item.Name;
             Item = item;

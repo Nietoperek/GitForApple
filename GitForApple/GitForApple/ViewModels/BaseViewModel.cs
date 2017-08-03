@@ -11,8 +11,8 @@ namespace GitForApple.ViewModels
         /// <summary>
         /// Get the azure service instance
         /// </summary>
-        public IGitHubData<Response> DataGit => DependencyService.Get<IGitHubData<Response>>();
-        public IDBData<Response> DataSQLite => DependencyService.Get<IDBData<Response>>();
+        public IGitHubData<Repo> DataGit => DependencyService.Get<IGitHubData<Repo>>();
+        public IDBData<Repo> DataSQLite => DependencyService.Get<IDBData<Repo>>();
         bool isBusy = false;
         public bool IsBusy
         {

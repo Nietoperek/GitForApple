@@ -1,26 +1,25 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using SQLite;
+using SQLiteNetExtensionsAsync.Extensions;
+using SQLite.Extensions;
 using GitForApple.Models;
 using Xamarin.Forms;
 using Android.Util;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 [assembly: Dependency(typeof(GitForApple.Services.DBData))]
 namespace GitForApple.Services
 {
 
-    public class DBData : IDBData<Response>
+    public class DBData : IDBData<Repo>
     {
         SQLiteAsyncConnection database;
-
+        
         bool isInitialized;
 
-        //public DBData(string dbPath)
-        //{
-        //    database = new SQLiteAsyncConnection(dbPath);
-        //    database.CreateTableAsync<Response>().Wait();
-        //}
         public async Task InitializeAsync()
         {
             if (isInitialized)
@@ -31,70 +30,73 @@ namespace GitForApple.Services
                 {
                     database = new SQLiteAsyncConnection(DependencyService.Get<Helpers.IFileHelper>().GetLocalFilePath("GitHubApi.db3"));
                 }
-                //var test = await database.CreateTableAsync<Dbo>();
-
                 var success1 = await database.CreateTableAsync<Owner>();
-                var success = await database.CreateTableAsync<Response>();
-                Log.Error("SQLITEDB", success.ToString());
+                var success = await database.CreateTableAsync<Repo>();
+                Debug.WriteLine("SQLITEDB", "Database tables created "+success.ToString());
                 isInitialized = true;
             }
             catch (SQLiteException ex)
             {
-                Log.Error("SQLite DB", ex.Message);
+                Debug.WriteLine("SQLite DB", ex.Message);
             }
             catch (Exception e)
             {
-                Log.Error("System error", e.Message);
+                Debug.WriteLine("System error", e.Message);
             }
         }
-        public async Task<IEnumerable<Response>> GetItemsAsync()
+        public async Task<IEnumerable<Repo>> GetItemsAsync()
         {
             await InitializeAsync();
-            var dbItems = await database.Table<Response>().ToListAsync();
-            return await Task.FromResult(dbItems);
+            var sortedDbItems = (await database.GetAllWithChildrenAsync<Repo>()).OrderBy(r => r.Name);
+            return await Task.FromResult(sortedDbItems);
         }
 
-        public async Task<Response> GetItemAsync(int id)
+        public async Task<Repo> GetItemAsync(int id)
         {
             await InitializeAsync();
-            return await database.Table<Response>().Where(i => i.RepoId == id).FirstOrDefaultAsync();
+            return await database.GetWithChildrenAsync<Repo>(id);
         }
 
-        public async Task<int> SaveItemAsync(Response item)
+        public async Task SaveItemAsync(Repo item)
         {
-            return await database.InsertOrReplaceAsync(item);
+            await database.InsertOrReplaceWithChildrenAsync(item);
         }
 
-        public async Task<int> SaveListAsync(IEnumerable<Response> items)
+        public async Task<int> SaveListAsync(IEnumerable<Repo> items)
         {
             await InitializeAsync();
             var numberOfItems = 0;
             try
             {
-                numberOfItems = await database.InsertAllAsync(items);
+                await database.InsertAllWithChildrenAsync(items);
+                await database.InsertAsync(items.ToList()[0].Owner);
+                //foreach(Repo r in items.ToList())
+                //{
+                //    await database.InsertAsync(r.Owner);
+                //}
             }
             catch (Exception e)
             {
-                Log.Error("System error", e.Message);
+                Debug.WriteLine("System error", e.Message);
             }
             return numberOfItems;
         }
 
-        public async Task<int> SaveorReplaceListAsync(List<Response> items)
+        public async Task<int> SaveorReplaceListAsync(List<Repo> items)
         {
             await InitializeAsync();
             var numberOfItems = 0;
-            await database.InsertAllAsync(items);
+            await database.InsertAllWithChildrenAsync(items);
             if (items != null && items.Count > 0)
             {
                 numberOfItems = items.Count;
-                foreach (Response r in items)
+                foreach (Repo r in items)
                     await SaveItemAsync(r);
             }
             return await Task.FromResult(numberOfItems);
         }
 
-        public async Task<int> DeleteItemAsync(Response item)
+        public async Task<int> DeleteItemAsync(Repo item)
         {
             return await database.DeleteAsync(item);
         }

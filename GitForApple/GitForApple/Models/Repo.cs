@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using GitForApple.Helpers;
+using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
 
 namespace GitForApple.Models
 {
-    public class Response : BaseDataObject
+    //[Table("Repos")]
+    public class Repo : ObservableObject
     {
         [JsonProperty("id")]
         int repoId = -1;
@@ -21,9 +23,8 @@ namespace GitForApple.Models
         string updated_at = String.Empty;
         [JsonProperty("forks")]
         int forks = -1;
-        int ownerId = -1;
-
-        public Response() { }
+        //int ownerId;
+        public Repo() { }
 
         [PrimaryKey]
         public int RepoId
@@ -40,13 +41,10 @@ namespace GitForApple.Models
         {
             get { return name; }
             set { SetProperty(ref name, value); }
-        }        
-        [ForeignKey(typeof(Owner))]
-        public int OwnerId
-        {
-            get { return ownerId; }
-            set { SetProperty(ref ownerId, value); }
         }
+        [ForeignKey(typeof(Owner))]
+        public int OwnerId_ { get; set; }
+
         [OneToOne]
         public Owner Owner
         {
@@ -74,7 +72,7 @@ namespace GitForApple.Models
             set { SetProperty(ref forks, value); }
         }
 
-        public void Clone(Response source)
+        public void Clone(Repo source)
         {
             Name = source.name;
             Description = source.description;
@@ -85,19 +83,16 @@ namespace GitForApple.Models
         }
     }
 
-    public class Owner : BaseDataObject
+    //[Table("Owners")]
+    public class Owner : ObservableObject
     {
         [JsonProperty("avatar_url")]
         string avatar_url = String.Empty;
-        [PrimaryKey, AutoIncrement]
+        
+        [JsonProperty("id"), PrimaryKey]
         public int OwnerId { get; set; }
 
-        [ForeignKey(typeof(Response))]
-        public int RepoId { get; set; }
-        [OneToOne]
-        public Response Response { get; set; }
-
-        public Owner() { }
+        public Owner() { }        
 
         public string Avatar_url
         {

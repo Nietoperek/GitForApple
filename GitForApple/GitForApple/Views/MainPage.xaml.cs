@@ -29,7 +29,7 @@ namespace GitForApple.Views
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)
         {
             ItemsListView.IsEnabled = false; //freeze ListView
-            var item = args.SelectedItem as Response;
+            var item = args.SelectedItem as Repo;
             if (item == null) //item null or deselected
             {
                 ItemsListView.IsEnabled = true;

@@ -13,10 +13,10 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(GitForApple.Services.GitHubApi))]
 namespace GitForApple.Services
 {
-    public class GitHubApi : IGitHubData<Response>
+    public class GitHubApi : IGitHubData<Repo>
     {
         bool isInitialized;
-        List<Response> repos;
+        List<Repo> repos;
         HttpClient client;
         static string _UserAgent = "Mobile Application GitForApple Agent";
         //static string _UserToken;
@@ -91,7 +91,7 @@ namespace GitForApple.Services
             {
                 int lastPage = numberOfpages;
                 var content = await response.Content.ReadAsStringAsync();
-                var responseList = JsonConvert.DeserializeObject<List<Response>>(content);
+                var responseList = JsonConvert.DeserializeObject<List<Repo>>(content);
                 if (repos == null) { repos = responseList; }
                 else { repos.AddRange(responseList); }
                 string nextUrl = String.Empty;
@@ -126,13 +126,13 @@ namespace GitForApple.Services
                 var updateResponse = JsonConvert.DeserializeObject<UpdateResponse>(content);
                 var array = updateResponse.Items;
                 var updatedRepos = array.ToList();
-                List<Response> newItems = updatedRepos.Where(n => repos.All(d => n.RepoId != d.RepoId)).ToList();
-                List<Response> toBeUpdated = repos.Where(c => updatedRepos.Any(d => c.RepoId == d.RepoId && c.Updated_at != d.Updated_at)).ToList();
+                List<Repo> newItems = updatedRepos.Where(n => repos.All(d => n.RepoId != d.RepoId)).ToList();
+                List<Repo> toBeUpdated = repos.Where(c => updatedRepos.Any(d => c.RepoId == d.RepoId && c.Updated_at != d.Updated_at)).ToList();
                 //toBeUpdated.Add(new Response { RepoId = 64889661, Name = "Updated item", Description="Test no image update" });
                 if (toBeUpdated != null && toBeUpdated.Count > 0)
                 {
                     updated = true;
-                    foreach (Response u in toBeUpdated)
+                    foreach (Repo u in toBeUpdated)
                     {
                         var repo = repos.First(i => i.RepoId == u.RepoId);
                         repo.Clone(u);
@@ -148,12 +148,12 @@ namespace GitForApple.Services
 
             return await Task.FromResult(updated);
         }
-        public async Task<IEnumerable<Response>> GetItemsAsync(bool refresh = false)
+        public async Task<IEnumerable<Repo>> GetItemsAsync(bool refresh = false)
         {
             if (repos != null && refresh)
             {
                 if (!await getContentUpdate())
-                    return await Task.FromResult(Enumerable.Empty<Response>());
+                    return await Task.FromResult(Enumerable.Empty<Repo>());
             }
             await InitializeAsync();
             return await Task.FromResult(repos);

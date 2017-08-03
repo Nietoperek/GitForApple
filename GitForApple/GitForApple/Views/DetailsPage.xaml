@@ -34,6 +34,7 @@
             <StackLayout Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Padding="0,20,0,0">
                 <Label Text="Description:" Style="{DynamicResource DetailsDescriptionStyle}"/>
                 <Label Text="{Binding Item.Description}" Style="{DynamicResource DetailsDescriptionBodyStyle}"/>
+                <Label Text="{Binding Item.Owner.Avatar_url}" Style="{DynamicResource DetailsDescriptionBodyStyle}"/>
             </StackLayout>
         </Grid>
     </ContentPage.Content>
