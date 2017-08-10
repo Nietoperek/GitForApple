@@ -3,6 +3,7 @@ using GitForApple.Helpers;
 using GitForApple.Models;
 using GitForApple.Views;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -45,18 +46,22 @@ namespace GitForApple.ViewModels
             if (IsBusy)
                 return;
             IsBusy = true;
+            if (Repos.Count == 0)
+            {
+                var databaseObjects = await DataSQLite.GetItemsAsync();
+                if (databaseObjects != null && databaseObjects.Any())
+                {
+                    Repos.ReplaceRange(databaseObjects);
+                }
+            }
             if (!await NetworkAvailable())
             {
-                if (Repos.Count == 0) { 
-                var databaseObjects = await DataSQLite.GetItemsAsync();
-                Repos.ReplaceRange(databaseObjects);
-                }
                 IsBusy = false;
                 return;
             }
             try
             {
-                var repos = await DataGit.GetItemsAsync(update);
+                var repos = await DataGit.GetItemsAsync(Repos.Count > 0);
                 if (repos != null && repos.Any())
                 {
                     await DataSQLite.SaveListAsync(repos);

@@ -89,7 +89,7 @@ namespace GitForApple.Services
             }
             if (response != null && response.IsSuccessStatusCode)
             {
-                Application.Current.Properties ["updatedAt"] = DateTime.Now.ToLocalTime();
+                Application.Current.Properties["updatedAt"] = DateTime.Now.ToLocalTime();
                 await Application.Current.SavePropertiesAsync();
                 int lastPage = numberOfpages;
                 var content = await response.Content.ReadAsStringAsync();
@@ -118,15 +118,13 @@ namespace GitForApple.Services
         public async Task<bool> getContentUpdate()
         {
             bool updated = false;
-            var lastUpdateAt=Application.Current.Properties.ContainsKey("updatedAt") ? (DateTime)Application.Current.Properties["updatedAt"] : new DateTime();
+            var lastUpdateAt = Application.Current.Properties.ContainsKey("updatedAt") ? (DateTime)Application.Current.Properties["updatedAt"] : new DateTime();
             var uri = new Uri(string.Format(_SearchURL + lastUpdateAt.ToString("yyyy") + "-" + lastUpdateAt.ToString("MM") + "-" + lastUpdateAt.ToString("dd"), string.Empty));
             var response = await client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                var updateResponse = JsonConvert.DeserializeObject<UpdateResponse>(content);
-                var array = updateResponse.Items;
-                var updatedRepos = array.ToList();
+                var updatedRepos = (JsonConvert.DeserializeObject<UpdateResponse>(content)).Items.ToList();
                 List<Repo> newItems = updatedRepos.Where(n => repos.All(d => n.RepoId != d.RepoId)).ToList();
                 List<Repo> toBeUpdated = repos.Where(c => updatedRepos.Any(d => c.RepoId == d.RepoId && c.Updated_at != d.Updated_at)).ToList();
                 //toBeUpdated.Add(new Response { RepoId = 64889661, Name = "Updated item", Description="Test no image update" });
@@ -152,7 +150,7 @@ namespace GitForApple.Services
             return await Task.FromResult(updated);
         }
         public async Task<IEnumerable<Repo>> GetItemsAsync(bool refresh = false)
-        {
+        {            
             if (repos != null && refresh)
             {
                 if (!await getContentUpdate())
