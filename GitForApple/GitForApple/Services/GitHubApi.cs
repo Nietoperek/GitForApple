@@ -118,7 +118,6 @@ namespace GitForApple.Services
         public async Task<bool> getContentUpdate()
         {
             bool updated = false;
-            //TODO LastUpdateTime
             var lastUpdateAt=Application.Current.Properties.ContainsKey("updatedAt") ? (DateTime)Application.Current.Properties["updatedAt"] : new DateTime();
             var uri = new Uri(string.Format(_SearchURL + lastUpdateAt.ToString("yyyy") + "-" + lastUpdateAt.ToString("MM") + "-" + lastUpdateAt.ToString("dd"), string.Empty));
             var response = await client.GetAsync(uri);

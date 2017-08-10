@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace GitForApple.Models
 {
@@ -50,7 +51,7 @@ namespace GitForApple.Models
             set { SetProperty(ref ownerId, value); }
         }
         
-        [ManyToOne]
+        [ManyToOne(CascadeOperations = CascadeOperation.All)]
         public Owner Owner
         {
             get { return owner; }
@@ -94,10 +95,13 @@ namespace GitForApple.Models
     {
         [JsonProperty("avatar_url")]
         string avatar_url = String.Empty;
-        
-        [JsonProperty("id"), PrimaryKey]
-        public int OwnerId { get; set; }
 
+        [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+
+        [JsonProperty("id")]
+        public int OwnerId { get; set; }        
+        
         public Owner() { }        
 
         public string Avatar_url
