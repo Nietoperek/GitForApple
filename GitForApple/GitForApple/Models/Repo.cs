@@ -6,7 +6,7 @@ using System;
 
 namespace GitForApple.Models
 {
-    //[Table("Repos")]
+    [Table("Repos")]
     public class Repo : ObservableObject
     {
         [JsonProperty("id")]
@@ -23,7 +23,7 @@ namespace GitForApple.Models
         string updated_at = String.Empty;
         [JsonProperty("forks")]
         int forks = -1;
-        //int ownerId;
+        int ownerId;
         public Repo() { }
 
         [PrimaryKey]
@@ -42,15 +42,21 @@ namespace GitForApple.Models
             get { return name; }
             set { SetProperty(ref name, value); }
         }
-        [ForeignKey(typeof(Owner))]
-        public int OwnerId_ { get; set; }
 
-        [OneToOne]
+        [ForeignKey(typeof (Owner))]
+        public int OwnerId
+        {
+            get { return ownerId; }
+            set { SetProperty(ref ownerId, value); }
+        }
+        
+        [ManyToOne]
         public Owner Owner
         {
             get { return owner; }
             set { SetProperty(ref owner, value); }
         }
+
         public string Language
         {
             get { return language; }
@@ -83,7 +89,7 @@ namespace GitForApple.Models
         }
     }
 
-    //[Table("Owners")]
+    [Table("Owners")]
     public class Owner : ObservableObject
     {
         [JsonProperty("avatar_url")]

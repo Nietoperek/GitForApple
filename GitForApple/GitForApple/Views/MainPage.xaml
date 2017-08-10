@@ -36,12 +36,6 @@
                                 </StackLayout>
                             </Grid>
                         </ViewCell>
-                        <!--<ImageCell
-                            Text="{Binding Name}"
-                            Detail="{Binding Description}"
-                            ImageSource="{Binding Owner.Avatar_url}"
-                            >
-                        </ImageCell>-->
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>

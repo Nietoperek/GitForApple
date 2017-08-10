@@ -89,6 +89,8 @@ namespace GitForApple.Services
             }
             if (response != null && response.IsSuccessStatusCode)
             {
+                Application.Current.Properties ["updatedAt"] = DateTime.Now.ToLocalTime();
+                await Application.Current.SavePropertiesAsync();
                 int lastPage = numberOfpages;
                 var content = await response.Content.ReadAsStringAsync();
                 var responseList = JsonConvert.DeserializeObject<List<Repo>>(content);
@@ -117,8 +119,8 @@ namespace GitForApple.Services
         {
             bool updated = false;
             //TODO LastUpdateTime
-            DateTime now = DateTime.Now.ToLocalTime();
-            var uri = new Uri(string.Format(_SearchURL + now.ToString("yyyy") + "-" + now.ToString("MM") + "-" + now.ToString("dd"), string.Empty));
+            var lastUpdateAt=Application.Current.Properties.ContainsKey("updatedAt") ? (DateTime)Application.Current.Properties["updatedAt"] : new DateTime();
+            var uri = new Uri(string.Format(_SearchURL + lastUpdateAt.ToString("yyyy") + "-" + lastUpdateAt.ToString("MM") + "-" + lastUpdateAt.ToString("dd"), string.Empty));
             var response = await client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
@@ -144,6 +146,8 @@ namespace GitForApple.Services
                     updated = true;
                     repos.AddRange(newItems);
                 }
+                Application.Current.Properties["updatedAt"] = DateTime.Now.ToLocalTime();
+                await Application.Current.SavePropertiesAsync();
             }
 
             return await Task.FromResult(updated);

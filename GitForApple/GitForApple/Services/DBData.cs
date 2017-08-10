@@ -2,10 +2,8 @@
 using System.Threading.Tasks;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
-using SQLite.Extensions;
 using GitForApple.Models;
 using Xamarin.Forms;
-using Android.Util;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -62,24 +60,17 @@ namespace GitForApple.Services
             await database.InsertOrReplaceWithChildrenAsync(item);
         }
 
-        public async Task<int> SaveListAsync(IEnumerable<Repo> items)
+        public async Task SaveListAsync(IEnumerable<Repo> items)
         {
             await InitializeAsync();
-            var numberOfItems = 0;
             try
             {
                 await database.InsertAllWithChildrenAsync(items);
-                await database.InsertAsync(items.ToList()[0].Owner);
-                //foreach(Repo r in items.ToList())
-                //{
-                //    await database.InsertAsync(r.Owner);
-                //}
             }
             catch (Exception e)
             {
                 Debug.WriteLine("System error", e.Message);
             }
-            return numberOfItems;
         }
 
         public async Task<int> SaveorReplaceListAsync(List<Repo> items)

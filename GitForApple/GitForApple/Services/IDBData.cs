@@ -8,7 +8,7 @@ namespace GitForApple.Services
         Task InitializeAsync();
         Task<T> GetItemAsync(int id);
         Task SaveItemAsync(T item);
-        Task<int> SaveListAsync(IEnumerable<T> items);
+        Task SaveListAsync(IEnumerable<T> items);
         Task<int> SaveorReplaceListAsync(List<T> items);
         Task<int> DeleteItemAsync(T item);
         Task<IEnumerable<T>> GetItemsAsync();
